@@ -1,9 +1,6 @@
-"""
-# Importación de librerías
-"""
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
 # **Definición de constantes**
 
@@ -20,9 +17,9 @@ registradas_df = pd.read_csv(RUTA_REGISTRADAS)
 # Se obtienen los valores únicos de la columna "ESTMATRICULA"
 estados = registradas_df['ESTMATRICULA'].value_counts()
 
-# Se imprime la información de las empresas por estado
-print("Empresas por estado:")
-print(estados.to_string())  # Imprime como string para mejor visualización
+# Se muestra la información de las empresas por estado en Streamlit
+st.subheader("Empresas por estado:")
+st.text(estados.to_string())  # Utiliza st.text para textos largos o st.write para objetos en general
 
 # **Análisis por municipio**
 
@@ -31,84 +28,43 @@ municipios = registradas_df.MUNCOMERCIAL.unique()
 
 # Diccionario para almacenar la cantidad de empresas por municipio
 empresas_municipio = {}
-
-# Se recorren los municipios
 for municipio in municipios:
     # Se filtra el DataFrame por municipio
     empresas_municipio[municipio] = registradas_df[registradas_df["MUNCOMERCIAL"] == municipio].shape[0]
 
 # Se crea un gráfico de barras con la cantidad de empresas por municipio
-plt.bar(empresas_municipio.keys(), empresas_municipio.values())
-plt.xlabel("Municipio")
-plt.ylabel("Número de empresas")
-plt.title("Empresas por municipio")
+fig, ax = plt.subplots()
+ax.bar(empresas_municipio.keys(), empresas_municipio.values())
+ax.set_xlabel("Municipio")
+ax.set_ylabel("Número de empresas")
+ax.set_title("Empresas por municipio")
 plt.xticks(rotation=90)
-plt.show()
-
-print(" ")
+st.pyplot(fig)  # Muestra el gráfico en Streamlit
 
 # **Análisis por rango de empleados**
 
 # Definición de los rangos de empleados
-RANGO_1_5 = 0
-RANGO_6_10 = 0
-RANGO_11_15 = 0
-RANGO_16_20 = 0
-RANGO_21_25 = 0
-RANGO_26_30 = 0
-RANGO_31_35 = 0
-RANGO_36_40 = 0
-RANGO_41_45 = 0
-RANGO_46_50 = 0
+rangos = ["1-5", "6-10", "11-15", "16-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50"]
+contadores_rango = {rango: 0 for rango in rangos}
 
 # Se recorren las empresas y se actualiza el contador del rango correspondiente
-for i in range(registradas_df.shape[0]):
-    empleados = registradas_df.loc[i, "Empleados"]
-    if empleados <= 5:
-        RANGO_1_5 += 1
-    elif empleados <= 10:
-        RANGO_6_10 += 1
-    elif empleados <= 15:
-        RANGO_11_15 += 1
-    elif empleados <= 20:
-        RANGO_16_20 += 1
-    elif empleados <= 25:
-        RANGO_21_25 += 1
-    elif empleados <= 30:
-        RANGO_26_30 += 1
-    elif empleados <= 35:
-        RANGO_31_35 += 1
-    elif empleados <= 40:
-        RANGO_36_40 += 1
-    elif empleados <= 45:
-        RANGO_41_45 += 1
-    elif empleados <= 50:
-        RANGO_46_50 += 1
-
-# Diccionario para almacenar los contadores por rango de empleados
-contadores_rango = {
-    "1-5":RANGO_1_5,
-    "6-10":RANGO_6_10,
-    "11-15":RANGO_11_15,
-    "16-20":RANGO_16_20,
-    "21-25":RANGO_21_25,
-    "26-30":RANGO_26_30,
-    "31-35":RANGO_31_35,
-    "36-40":RANGO_36_40,
-    "41-45":RANGO_41_45,
-    "46-50":RANGO_46_50,
-}
+for empleados in registradas_df["Empleados"]:
+    for rango in rangos:
+        if int(rango.split('-')[0]) <= empleados <= int(rango.split('-')[1]):
+            contadores_rango[rango] += 1
+            break
 
 # Convertir el diccionario a un DataFrame
-empresas_por_rango_df = pd.DataFrame.from_dict(contadores_rango, orient='index', columns=['Cantidad de empresas'])
+empresas_por_rango_df = pd.DataFrame(list(contadores_rango.items()), columns=['Rango de empleados', 'Cantidad de empresas'])
 
 # Se crea un gráfico de barras con la cantidad de empresas por rango de empleados
-plt.bar(empresas_por_rango_df.index, empresas_por_rango_df['Cantidad de empresas'])
-plt.xlabel("Rango de empleados")
-plt.ylabel("Cantidad de empresas")
-plt.title("Empresas por rango de empleados")
+fig, ax = plt.subplots()
+ax.bar(empresas_por_rango_df['Rango de empleados'], empresas_por_rango_df['Cantidad de empresas'])
+ax.set_xlabel("Rango de empleados")
+ax.set_ylabel("Cantidad de empresas")
+ax.set_title("Empresas por rango de empleados")
 plt.xticks(rotation=45)
-plt.show()
+st.pyplot(fig)
 
 # **Análisis de empresas de La Dorada con 0 empleados y Matricula activa**
 
@@ -118,7 +74,6 @@ la_dorada_df = registradas_df[(registradas_df["MUNCOMERCIAL"] == "LA DORADA") & 
 # Se obtienen los nombres de las empresas
 nombres_empresas = la_dorada_df["RAZON SOCIAL"].tolist()
 
-# Se imprime la información de las empresas
-#print("Empresas de La Dorada con 0 empleados y Matricula activa:")
-#for nombre in nombres_empresas:
-#    print(nombre)
+# Se imprime la información de las empresas en Streamlit
+st.subheader("Empresas de La Dorada con 0 empleados y Matricula activa:")
+st.write(nombres_empresas)  # Utiliza st.write para listas y objetos
