@@ -5,6 +5,18 @@ import matplotlib.pyplot as plt
 # Configurar el layout para que use toda la pantalla
 st.set_page_config(layout="wide")
 
+# Insertar CSS para espaciar columnas
+st.markdown("""
+    <style>
+    .block-container>div {
+        padding: 10px;  /* Espacio interno dentro de cada bloque de la columna */
+    }
+    .css-18e3th9 {
+        padding-right: 20px;  /* Ajusta el espacio entre columnas */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Crear dos columnas para el título y la sección de Empresas por estado
 title_col, state_col = st.columns([3, 2])
 
@@ -34,8 +46,8 @@ with state_col:
 
 # **Análisis por municipio y por rango de empleados**
 
-# Crear dos columnas para los gráficos de municipio y rango de empleados
-left_column, right_column = st.columns(2)
+# Crear dos columnas para los gráficos de municipio y rango de empleados, con un gap
+left_column, right_column = st.columns([1, 1], gap="large")
 
 # Gráfico de empresas por municipio
 with left_column:
