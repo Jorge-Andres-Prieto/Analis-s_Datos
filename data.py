@@ -5,8 +5,12 @@ import matplotlib.pyplot as plt
 # Configurar el layout para que use toda la pantalla
 st.set_page_config(layout="wide")
 
-# Título centralizado
-st.title("Empresas registradas Cámara de Comercio de La Dorada")
+# Crear dos columnas para el título y la sección de Empresas por estado
+title_col, state_col = st.columns([3, 2])
+
+# Título centralizado en la primera columna
+with title_col:
+    st.title("Empresas registradas Cámara de Comercio de La Dorada")
 
 # **Definición de constantes**
 
@@ -23,9 +27,8 @@ registradas_df = pd.read_csv(RUTA_REGISTRADAS)
 # Se obtienen los valores únicos de la columna "ESTMATRICULA"
 estados = registradas_df['ESTMATRICULA'].value_counts()
 
-# Crear columnas para centrar la información de los estados
-col1, col2, col3 = st.columns([1,2,1])
-with col2:
+# Información de empresas por estado en la segunda columna
+with state_col:
     st.subheader("Empresas por estado:")
     st.text(estados.to_string())
 
@@ -50,7 +53,6 @@ with left_column:
 # Gráfico de empresas por rango de empleados
 with right_column:
     st.subheader("Empresas por rango de empleados")
-    # Agregar rango de 0 empleados
     rangos = ["0", "1-5", "6-10", "11-15", "16-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50"]
     contadores_rango = {rango: 0 for rango in rangos}
     for empleados in registradas_df["Empleados"]:
