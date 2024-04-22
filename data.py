@@ -19,7 +19,9 @@ def config_page_layout():
 
 def load_data():
     """Carga el dataset desde una URL y retorna un DataFrame."""
-    ruta = ('https://docs.google.com/spreadsheets/d/e/2PACX-1vR9IGQhDWN0qA-jon8x0cUTap8IxvrdzGjF_kN98upNSQDeDJsI6UkpyGYOtPV18cbSB-rQzU62btO6/pub?gid=446676900&single=true&output=csv')
+    ruta = ('https://docs.google.com/spreadsheets/d/e/2PACX-1vR9IGQhDWN0qA-'
+            'jon8x0cUTap8IxvrdzGjF_kN98upNSQDeDJsI6UkpyGYOtPV18cbSB-rQzU62bt'
+            'O6/pub?gid=446676900&single=true&output=csv')
     return pd.read_csv(ruta)
 
 def display_company_states(df):
