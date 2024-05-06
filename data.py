@@ -1,8 +1,11 @@
-import streamlit as st  # Importa Streamlit para construir interfaces de usuario
+# Importa Streamlit para construir interfaces de usuario
+import streamlit as st
 
-import pandas as pd  # Importa Pandas para manejar estructuras de datos
+# Importa Pandas para manejar estructuras de datos
+import pandas as pd
 
-import matplotlib.pyplot as plt  # Importa matplotlib para generar gráficos
+# Importa matplotlib para generar gráficos
+import matplotlib.pyplot as plt
 
 def config_page_layout():
     """
