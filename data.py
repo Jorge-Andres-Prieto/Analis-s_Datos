@@ -1,10 +1,20 @@
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
+import streamlit as st  # Importa Streamlit para construir interfaces de usuario
+
+import pandas as pd  # Importa Pandas para manejar estructuras de datos
+
+import matplotlib.pyplot as plt  # Importa matplotlib para generar gráficos
 
 def config_page_layout():
-    """Configura el layout de Streamlit para utilizar toda la pantalla y
-    añade CSS personalizado para ajustar el espaciado entre columnas."""
+    """
+    Configura el layout de Streamlit para utilizar toda la pantalla y
+    añade CSS personalizado para ajustar el espaciado entre columnas.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     st.set_page_config(layout="wide")
     st.markdown("""
         <style>
@@ -18,23 +28,48 @@ def config_page_layout():
         """, unsafe_allow_html=True)
 
 def load_data():
-    """Carga el dataset desde una URL y retorna un DataFrame."""
+    """
+    Carga el dataset desde una URL y retorna un DataFrame.
+
+    Args:
+        None
+
+    Returns:
+        DataFrame: Datos cargados desde una URL especificada.
+
+    """
     ruta = ('https://docs.google.com/spreadsheets/d/e/2PACX-1vR9IGQhDWN0qA-'
             'jon8x0cUTap8IxvrdzGjF_kN98upNSQDeDJsI6UkpyGYOtPV18cbSB-rQzU62bt'
             'O6/pub?gid=446676900&single=true&output=csv')
     return pd.read_csv(ruta)
 
 def display_company_states(df):
-    """Muestra la cantidad de empresas por estado en una columna de Streamlit."""
+    """
+    Muestra la cantidad de empresas por estado en una columna de Streamlit.
+
+    Args:
+        df (DataFrame): DataFrame que contiene los datos de las empresas.
+
+    Returns:
+        None
+    """
     estados = df['ESTMATRICULA'].value_counts()
     with state_col:
         st.subheader("Empresas por estado:")
         st.text(estados.to_string())
 
 def plot_companies_by_municipality(df):
-    """Genera y muestra un gráfico de barras de empresas por municipio."""
+    """
+    Genera y muestra un gráfico de barras de empresas por municipio.
+
+    Args:
+        df (DataFrame): DataFrame que contiene los datos de las empresas.
+
+    Returns:
+        None
+    """
     municipios = df['MUNCOMERCIAL'].unique()
-    empresas_municipio = {mun: df[df["MUNCOMERCIAL"] == mun].shape[0] 
+    empresas_municipio = {mun: df[df["MUNCOMERCIAL"] == mun].shape[0]
                           for mun in municipios}
     fig, ax = plt.subplots()
     ax.bar(empresas_municipio.keys(), empresas_municipio.values())
@@ -45,8 +80,16 @@ def plot_companies_by_municipality(df):
     st.pyplot(fig)
 
 def plot_companies_by_employee_range(df):
-    """Genera y muestra un gráfico de barras de empresas por rango de empleados."""
-    rangos = ["0", "1-5", "6-10", "11-15", "16-20", "21-25", 
+    """
+    Genera y muestra un gráfico de barras de empresas por rango de empleados.
+
+    Args:
+        df (DataFrame): DataFrame que contiene los datos de las empresas.
+
+    Returns:
+        None
+    """
+    rangos = ["0", "1-5", "6-10", "11-15", "16-20", "21-25",
               "26-30", "31-35", "36-40", "41-45", "46-50"]
     contadores_rango = {rango: 0 for rango in rangos}
     for empleados in df["Empleados"]:
@@ -68,7 +111,16 @@ def plot_companies_by_employee_range(df):
     st.pyplot(fig)
 
 def main():
-    """Función principal que ejecuta todas las funciones configuradas."""
+    """
+    Función principal que ejecuta todas las funciones configuradas,
+    mostrando datos y gráficos relevantes de empresas registradas.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     config_page_layout()
     df = load_data()
     global title_col, state_col
@@ -81,8 +133,8 @@ def main():
         plot_companies_by_municipality(df)
     with right_column:
         plot_companies_by_employee_range(df)
-    la_dorada_df = df[(df["MUNCOMERCIAL"] == "LA DORADA") & 
-                      (df["Empleados"] == 0) & 
+    la_dorada_df = df[(df["MUNCOMERCIAL"] == "LA DORADA") &
+                      (df["Empleados"] == 0) &
                       (df["ESTMATRICULA"] == "Activa")]
     nombres_empresas = la_dorada_df["RAZON SOCIAL"].tolist()
     st.subheader("Empresas de La Dorada con 0 empleados y Matricula activa")
